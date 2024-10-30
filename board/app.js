@@ -2,7 +2,7 @@ const express = require("express");
 const handlebars = require("express-handlebars");
 const app = express();
 const postService = require("./services/post-service");
-const { ObjectId} = require("mongodb");
+const {ObjectId} = require("mongodb");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
