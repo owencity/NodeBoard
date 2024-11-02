@@ -63,8 +63,9 @@ app.post("/modify/", async (req, res) => {
 app.post("/write", async (req, res) => {
     const post = req.body;
     const result = await postService.writePost(collection, post);
-    res.redirect(`/detail/${result.insertedId}`);
+    res.redirect(`/detail/${result.insertedId}`); // insertedId 는 MongoDB에서 새롭게 생성된 문서의 고유 식별자 , 뷰가아닌 MongoDB에서 자동으로 생성한 값
 });
+
 
 app.get("/detail/:id", async (req, res) => {
     const result = await postService.getDetailPost(collection, req.params.id);
@@ -154,7 +155,7 @@ app.delete("/delete-comment", async (req, res) => {
     postService.updatePost(collection, id, post);
     return res.json({ isSuccess : true });
 });
-let collection;
+let collection; // 블록밖에서 선언 , 글로벌 스코프에 위치 ( 글로벌 함수 : 어디에서든 접근이 가능하다)
 
 app.listen(3000, async () => {
     console.log("Server started");

@@ -21,10 +21,11 @@ async function writePost(collection, post) {
     return await collection.insertOne(post);
 }
 
+
 // 글목록 
 async function list(collection , page, search) {
     const perPage = 10;
-    const query = { title : new RegExp(search , "i")}; // 1
+    const query = { title : new RegExp(search , "i")}; // 1, RegExp(search, i) : i(대소문자 구분없이) search 를 검색하라는 내장객체
     const cursor = collection.find(query, { limit : perPage, skip: (page -1) * perPage}) //2
     .sort({
         createDt: -1,
@@ -39,23 +40,22 @@ async function list(collection , page, search) {
 const projectionOption = { // 프로젝션 -> 투영 , DB에서는 데이터베이스에서 필요한 필드들만 선택해서 가져오는 것을 말함
     projection : {
         // 프로젝션 결괏값에서 일부만 가져올 떄 사용
-        password : 0,
-        "comments.password" : 0,
+        password : 0,  // 쿼리결과에서 제외
+        "comments.password" : 0, // 쿼리결과에서 제외
     },
 };
 
-async function getDetailPost(collection, id) {
+async function getDetailPost(collection, id) { 
     
-    const result1 = await collection.findOne({ _id: new ObjectId(id) });
-    console.log("테스트: " + result1.value);
+    const result1 = await collection.findOne({ _id: new ObjectId(id) }); // 업데이트로 ObjectId만 쓰지않고 new를 붙여쓰거나 ObjectId.createFromHexString를 사용
+    console.log("테스트: " + result1); // fineOne은 문서자체를 반환하기떄문에 value 필요없음.
     
-    const result = await collection.findOneAndUpdate( // 더이상 value 값으로반환x, 원본 문서로 반환
-      { _id: ObjectId.createFromHexString(id) },
-      { $inc: { hits: 1 } },
-      projectionOption
+    const result = await collection.findOneAndUpdate( // 더이상 value 값으로반환x, 원본 문서로 반환 findOneAndUpdate(filter, update, option)
+        { _id: ObjectId.createFromHexString(id) },    // filter 
+        { $inc: { hits: 1 } }, // update
+        projectionOption // option , 비밀번호를 굳이 가져와서 보여줄 필요없으므로 제외하는 옵션 추가
     );
     
-    console.log(result);
     return result;
   }
 // async function getDetailPost(collection, id) { // 하나의 게시글 정보 가져옴 , 읽을때마다 hits 1증가 , 몽고db함수 사용
