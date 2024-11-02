@@ -6,7 +6,7 @@ const PAGE_LIST_SIZE = 10; // 2 . 총 보여줄 페이지 리스트
 module.exports = ({ totalCount, page, perPage = 10}) => {
     const PER_PAGE = perPage;
     const totalPage = Math.ceil(totalCount / PER_PAGE); // 4 ceil 함수 -> 소수점 있으면 무조건 큰정수로 올림 4.1 도 5  4.5 도 5 , round는 소수점 첫째자리 기준 반올림 4.1 -> 4 4.5 -> 5
-
+    // total 글 개수를 perPage로 나누어 계산 -> 11개의 글개수면 2페이지로 나뉘어야 하니 -> 1.1 ceil 계산하여 2페이지 생성
     // 시작 페이지 
     let quotient = parseInt(page / PAGE_LIST_SIZE); // page는 현재 페이지 , page_list_size는 한페이지 목록에서 표시할 페이지 수, 현재페이지가 몇 번째 페이지 묶음에 속하는지 계산하고 정수 부분만 가져옴
     if (page % PAGE_LIST_SIZE === 0) { // 
