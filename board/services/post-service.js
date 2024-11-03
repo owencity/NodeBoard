@@ -47,7 +47,9 @@ const projectionOption = { // 프로젝션 -> 투영 , DB에서는 데이터베�
 
 async function getDetailPost(collection, id) { 
     
-    const result1 = await collection.findOne({ _id: new ObjectId(id) }); // 업데이트로 ObjectId만 쓰지않고 new를 붙여쓰거나 ObjectId.createFromHexString를 사용
+    const result1 = await collection.findOne({ _id: id }); 
+    // id굳이 변환할 필요없이 바로 넘겨줘도 무방 
+    // 업데이트로 ObjectId만 쓰지않고 new를 붙여쓰거나 ObjectId.createFromHexString를 사용
     console.log("테스트: " + result1); // fineOne은 문서자체를 반환하기떄문에 value 필요없음.
     
     const result = await collection.findOneAndUpdate( // 더이상 value 값으로반환x, 원본 문서로 반환 findOneAndUpdate(filter, update, option)
@@ -72,12 +74,14 @@ async function getDetailPost(collection, id) {
 
 async function getPostByIdAndPassword(collection , {id, password}) {
      return await collection.findOne(
-        { _id : ObjectId.createFromHexString(id), 
+        // { _id : ObjectId.createFromHexString(id),  
+            { _id : new ObjectId(id),   // new 권장되지않으나 사용가능
             password : password}, 
             projectionOption);
 }
 
 // id 로 데이터 불러오기
+
 async function getPostById(collection, id) {
     return await collection.findOne(
         { _id : new ObjectId(id)}
